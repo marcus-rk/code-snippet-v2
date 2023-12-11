@@ -45,21 +45,23 @@ app.get('/users/all',(req, res)=>{
 });
 
 // Endpoint to create a new user
-app.post('/users/new', (req, res) => {
-    // Extracting username and password from the request body
-    const username = req.body.username.toString();
-    const password = req.body.password.toString();
+app.post('/user/new', (req, res) => {
+    // Extracting username, email, birthdate and password from the request body
+    const username = req.body.username;
+    const email = req.body.email;
+    const birthDate = req.body.birthDate;
+    const password = req.body.password;
 
-    // Checking if the username already exists
-    db.query('SELECT username FROM `user` WHERE username = ?',
-        [username],
+    // Checking if the username or email already exists
+    db.query('SELECT user_id FROM `user` WHERE username = ? OR email = ?',
+        [username, email],
         (error, results) => {
             if (results.length > 0) {
-                res.status(403).send('Username already exists');
+                res.status(403).send('Username OR email already exists');
             } else {
                 // Inserting a new user into the database
-                db.query('INSERT INTO `user` (username, `password`) VALUES (?, ?)',
-                    [username, password],
+                db.query('INSERT INTO `user` (username, email, date_of_birth, `password`) VALUES (?, ?, ?, ?)',
+                    [username, email, birthDate, password],
                     (error, results) => {
                         if (error) {
                             console.error('Error inserting user:', error);
@@ -71,6 +73,45 @@ app.post('/users/new', (req, res) => {
             }
         });
 });
+
+// Endpoint to log in user by email or username (and password)
+// Use POST and not GET, to not expose user password in URL.
+app.post('/user/login', (req, res) => {
+    // Extracting username and password from the request body
+    const usernameOrEmail = req.body.usernameOrEmail;
+    const password = req.body.password;
+
+    // Check if the user exists by username or email
+    const query = 'SELECT user_id FROM `user` WHERE username = ? OR email = ?';
+    db.query(query, [usernameOrEmail, usernameOrEmail], (error, results) => {
+        if (error) {
+            console.error('Error checking if user exists:', error);
+            res.status(401).send('Username OR email does not exist');
+            return;
+        }
+
+        if (results.length > 0) {
+            // Check if password is correct
+            const queryPasswordCheck = 'SELECT user_id FROM `user` WHERE (username = ? OR email = ?) AND `password` = ?';
+            db.query(queryPasswordCheck, [usernameOrEmail, usernameOrEmail, password], (error, results) => {
+                if (error) {
+                    console.error('Error logging in user:', error);
+                    res.status(500).send('Internal Server Error ' +  error);
+                    return;
+                }
+
+                if (results.length > 0) {
+                    res.status(200).send('Login successful');
+                } else {
+                    res.status(401).send('Incorrect password');
+                }
+            });
+        } else {
+            res.status(401).send('Username OR email does not exist');
+        }
+    });
+});
+
 
 // Endpoint to retrieve all code snippets (title, author, author_id, language, code, date, snippet_id)
 app.get('/code-snippets/all',(req, res)=>{

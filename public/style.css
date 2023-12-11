@@ -1,0 +1,211 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'WoltHeading-Omnes', "Helvetica Neue", sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    width: 100dvw;
+    height: 100dvh;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.error-inputfield {
+    border-color: var(--color-four);
+} .error-inputfield::placeholder {
+      color: var(--color-four);
+  }
+
+:root {
+    --color-one: black;
+    --color-two: white;
+    --color-three: lightgray;
+    --color-four: red;
+}
+
+/*********************************************/
+/************ HEADER START *******************/
+/*********************************************/
+
+header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 70px;
+    background-color: var(--color-two);
+    box-shadow: 0 0 10px rgba(0,0,0, .3);
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 23px;
+}
+
+#profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80%;
+    aspect-ratio: 1/1;
+    border-radius: 50%; /* Make it round */
+}
+
+#profile span {
+    font-size: 25px;
+}
+
+button {
+    border: 2px solid var(--color-one);
+    background: none;
+    padding: 12px;
+    cursor: pointer;
+} button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(0,0,0, .2);
+  }
+
+#create-backdrop, #login-backdrop {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    top: 0;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-two);
+    margin: auto;
+    padding: 30px;
+    border: 2px solid var(--color-one);
+    overflow: auto; /* Enable scroll if needed */
+    position: relative;
+    max-height: 75dvh;
+    max-width: 400px;
+    width: 100%;
+    gap: 20px;
+}
+
+form {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 80%;
+    min-height: 100px;
+    padding: 20px;
+}
+
+#login-user-modal form button {
+    padding: 0;
+    border: none;
+    text-decoration: underline;
+    align-self: end;
+    width: 160px;
+    margin-top: -14px;
+} #login-user-modal form button:hover {
+      box-shadow: none;
+  }
+
+.form-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+}
+
+.modal form input {
+    margin-top: 8px;
+    margin-bottom: 20px;
+    width: 92%;
+}
+
+.modal form label {
+    padding-left: 10px;
+}
+
+.modal button {
+    background-color: var(--color-two);
+    width: 100px;
+}
+
+input {
+    padding: 10px;
+    font-size: 16px;
+}
+
+
+/*********************************************/
+/************** MAIN START *******************/
+/*********************************************/
+
+main {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.filters {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    border-right: 3px solid lightgray;
+    width: 30%;
+    max-width: 350px;
+    min-width: 250px;
+    gap: 30px;
+    padding-top: 30px;
+}
+
+.code-snippets {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    padding-top: 30px;
+}
+
+.code-snippets ul {
+    padding-top: 30px;
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    width: 80%;
+}
+
+.code-snippets li {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 12px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0, .2);
+    width: 100%;
+}
+
+.code-snippets li span:nth-child(1) {
+    font-weight: bold;
+}
