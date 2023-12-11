@@ -11,8 +11,8 @@
     <h1>Code Snippet v2</h1>
 
     <div class="header-buttons">
-        <button id="front-create-user">Create user</button>
         <button id="front-log-in">Log in</button>
+        <button id="front-create-user" class="priority-button">Create user</button>
     </div>
 
     <button class="hidden" id="profile">
@@ -36,7 +36,7 @@
                 <input type="password" id="create-password" placeholder="password here..." required>
             </form>
             <div class="form-buttons">
-                <button id="create-user">Create User</button>
+                <button id="create-user" class="priority-button">Create User</button>
                 <button id="create-user-cancel">Cancel</button>
             </div>
         </div>
@@ -52,10 +52,10 @@
                 <label for="login-password">Password</label>
                 <input type="password" id="login-password" placeholder="password here..." required>
 
-                <button>No user? Create one here</button>
+                <button id="redirect-to-create-user">No user? Create one here</button>
             </form>
             <div class="form-buttons">
-                <button id="login-user">Log in</button>
+                <button id="login-user" class="priority-button">Log in</button>
                 <button id="login-cancel">Cancel</button>
             </div>
         </div>
@@ -64,8 +64,14 @@
 </header>
 
 <main>
-    <section class="filters">
-        <h2>Filters</h2>
+    <section class="left-section">
+        <div>
+            <button class="priority-button">New Snippet</button>
+        </div>
+        <div class="filters">
+            <h2>Filters</h2>
+            <ul></ul>
+        </div>
     </section>
     <section class="code-snippets">
         <h2>Code snippet Overview</h2>
