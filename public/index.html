@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CPH Study Cafe Finder</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- TODO: Find logo -->
+    <!-- <link rel="icon" type="image/x-icon" href="img/..."> -->
+</head>
+<body>
+<header>
+    <h1>CPH Study Cafe Finder</h1>
+
+    <div class="header-buttons">
+        <button id="front-create-user">Create user</button>
+        <button id="front-log-in">Log in</button>
+    </div>
+
+    <button class="hidden" id="profile">
+        <span>👤</span>
+    </button>
+
+    <div id="create-backdrop" class="hidden">
+        <div id="create-user-modal" class="modal hidden">
+            <h2>Create new user</h2>
+            <form>
+                <label for="create-username">Username</label>
+                <input type="text" id="create-username" placeholder="username here..." required>
+
+                <label for="create-email">E-mail</label>
+                <input type="email" id="create-email" placeholder="email here..." required>
+
+                <label for="date-of-birth">Birth date</label>
+                <input type="date" id="date-of-birth" value="2000-01-01" required>
+
+                <label for="create-password">Password</label>
+                <input type="password" id="create-password" placeholder="password here..." required>
+            </form>
+            <div class="form-buttons">
+                <button id="create-user">Create User</button>
+                <button id="create-user-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-backdrop" class="hidden">
+        <div id="login-user-modal" class="modal hidden">
+            <h2>Log in</h2>
+            <form>
+                <label for="login-username-mail">Username or Email</label>
+                <input type="text" id="login-username-mail" placeholder="username or email here..." required>
+
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" placeholder="password here..." required>
+
+                <button>No user? Create one here</button>
+            </form>
+            <div class="form-buttons">
+                <button id="login-user">Log in</button>
+                <button id="login-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</header>
+
+<main>
+    <section class="filters">
+        <h2>Filters</h2>
+        <div>
+            <label for="price-level">Price Level:</label>
+            <select id="price-level"> <!-- TODO: Load this dynamically -->
+                <option value="low">low</option>
+                <option value="low-medium">low-medium</option>
+                <option value="medium">medium</option>
+                <option value="medium-high">medium-high</option>
+                <option value="high">high</option>
+            </select>
+        </div>
+    </section>
+    <section class="cafes">
+        <h2>Cafes Overview</h2>
+        <ul></ul>
+    </section>
+</main>
+
+<footer>
+    <span>Footer</span>
+</footer>
+
+<script src="js-src/user.js"></script>
+<script src="js-src/cafeOverview.js"></script>
+<script src="js-src/main.js"></script>
+</body>
+</html>
