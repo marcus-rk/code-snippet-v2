@@ -13,7 +13,9 @@ USE code_snippet;
 CREATE TABLE IF NOT EXISTS `user` (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(64) NOT NULL,
+    email VARCHAR(255) NOT NULL,
     `password` VARCHAR(64) NOT NULL,
+    date_of_birth DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -51,11 +53,11 @@ CREATE TABLE IF NOT EXISTS code_snippet_fave (
 -- -------------------------------------------
 
 -- Inserting data into `user` table
-INSERT INTO `user` (username, `password`)
-VALUES ('john_doe', 'password123'),
-       ('jane_smith', 'securepass'),
-       ('bob_coder', 'letmein');
-       
+INSERT INTO `user` (username, email, `password`, date_of_birth)
+VALUES ('john_doe', 'john@mail.com', 'password123', "1989-05-01"),
+       ('jane_smith', 'jane@smith.com','securepass', "1999-10-12"),
+       ('bob_coder', 'bob@mail.com','letmein', "2002-04-04");
+
 -- Insert programming languages (JS, HTML and CSS because that is what I know)
 -- ID to keep normalization
 INSERT INTO programming_language (language_name) VALUES
