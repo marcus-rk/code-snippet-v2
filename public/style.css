@@ -49,7 +49,7 @@ header {
     width: 100%;
     height: 120px;
     background-color: var(--color-darkest);
-    box-shadow: 0 0 20px 10px rgba(82,114,143, 50%);
+    box-shadow: 0 0 20px 1px rgba(82,114,143, 50%);
 }
 
 .header-buttons {
@@ -67,15 +67,16 @@ h1 {
 
 #profile {
     display: flex;
-    align-items: center;
     justify-content: center;
-    height: 80%;
-    aspect-ratio: 1/1;
-    border-radius: 50%; /* Make it round */
+    align-items: center;
+    background-color: var(--color-darkest);
+    min-height: fit-content;
+    min-width: fit-content;
 }
 
-#profile span {
-    font-size: 25px;
+.material-symbols-outlined {
+    color: var(--color-accent);
+    transform: scale(225%);
 }
 
 button {
@@ -112,7 +113,7 @@ button {
     top: 0;
     width: 100dvw;
     height: 100dvh;
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(0,0,0,0.35);
 }
 
 .modal {
@@ -121,9 +122,11 @@ button {
     justify-content: center;
     align-items: center;
     background-color: var(--color-darker);
+    box-shadow: 0 0 20px 3px rgba(0,0,0, 80%);
     margin: auto;
     padding: 30px;
-    border: 10px solid var(--color-dark);
+    outline: 10px solid var(--color-dark);
+    border-radius: 12px;
     overflow: auto; /* Enable scroll if needed */
     position: relative;
     max-height: 75dvh;
@@ -168,25 +171,22 @@ form {
 }
 
 .modal form input {
+    background-color: var(--color-white);
+    color: var(--color-black);
     border: 2px solid var(--color-darker);
+    padding: 10px;
+    font-size: 16px;
+    min-height: 16px;
     margin-top: 8px;
     margin-bottom: 20px;
     width: 92%;
+    border-radius: 8px;
 }
 
 .modal form label {
     font-weight: bold;
     padding-left: 10px;
 }
-
-input {
-    background-color: var(--color-white);
-    color: var(--color-black);
-    padding: 10px;
-    font-size: 16px;
-    min-height: 16px;
-}
-
 
 /*********************************************/
 /************** MAIN START *******************/
