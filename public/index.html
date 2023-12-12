@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <title>Code Snippet v2</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="image/code-snippet-icon.png">
-    <!-- https://developers.google.com/fonts/docs/material_icons icon-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="icon" type="image/x-icon" href="images/code-snippet-icon.png">
+    <!-- icons from google fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+
+    <!-- css for code syntax highlight by highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
 </head>
 <body>
 <header>
@@ -91,12 +94,16 @@
                     </button>
                 </div>
                 <div class="snippet-body">
-                    <span>Author: john_doe</span>
-                    <span>Programming language: JavaScript</span>
+                    <div class="snippet-body-top">
+                        <span>Author: john_doe</span>
+                        <img src="images/js.png" alt="javascript icon">
+                    </div>
                     <pre>
-                        <code><br>function sum(a, b) { <br>return a + b;<br> }</code>
+                        <code class="language-javascript">function sum(a, b) {
+    return a + b;
+}</code>
                     </pre>
-                    <span>Date: 2023-12-11</span>
+                    <span class="snippet-date">Date: 2023-12-11</span>
                 </div>
             </li>
             <li>
@@ -113,7 +120,10 @@
                     <span>Programming language: JavaScript</span>
                     <span>Date: 2023-12-11</span>
                     <pre>
-                        <code><br>function sum(a, b) { <br>return a + b;<br> }</code>
+                        <code>function sum(a, b) {
+return a + b;
+}
+                        </code>
                     </pre>
                 </div>
             </li>
@@ -127,5 +137,9 @@
 
 <script src="js-src/user.js"></script>
 <script src="js-src/codeSnippet.js"></script>
+
+<!-- highlight.js scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
 </body>
 </html>

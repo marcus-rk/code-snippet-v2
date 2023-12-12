@@ -30,6 +30,7 @@ function createAndDisplayCodeSnippets(codeSnippetArray) {
     });
 
     codeSnippetCountElement.innerText = `(Found ${codeSnippetArray.length} code-snippets)`;
+    hljs.highlightAll(); // hightligt.js
 }
 
 /**
@@ -46,7 +47,6 @@ function getCodeSnippetElement(codeSnippetObject) {
     const programmingLanguage = codeSnippetObject.programming_language;
     const date = codeSnippetObject.date.slice(0,10);
     const code = codeSnippetObject.code;
-    const codeFormatted = code.replaceAll('\t', '\n') // tab and new line
 
     const li = document.createElement('li');
     const spanTitle = document.createElement('span');
@@ -60,7 +60,7 @@ function getCodeSnippetElement(codeSnippetObject) {
     spanAuthor.innerText = `Author: ${author}`;
     spanProgrammingLanguage.innerText = `Programming language: ${programmingLanguage}`;
     spanDate.innerText = `Date: ${date}`;
-    codeTag.innerText = `\n${codeFormatted}`;
+    codeTag.innerText = `${code}`;
 
     pre.appendChild(codeTag);
 
