@@ -7,6 +7,7 @@
     <link rel="icon" type="image/x-icon" href="image/code-snippet-icon.png">
     <!-- https://developers.google.com/fonts/docs/material_icons icon-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 </head>
 <body>
 <header>
@@ -77,7 +78,46 @@
     </section>
     <section class="code-snippets">
         <h2>Code snippet Overview</h2>
+        <span>(Found 0 code-snippets)</span>
         <ul></ul>
+        <ul>
+            <li>
+                <div class="snippet-header">
+                    <span>Sum two Numbers</span>
+                    <button>
+                        <!-- TODO: Remember hidden -->
+                        <span class="material-symbols-outlined">favorite</span>
+                        <span class="material-symbols-outlined">heart_broken</span>
+                    </button>
+                </div>
+                <div class="snippet-body">
+                    <span>Author: john_doe</span>
+                    <span>Programming language: JavaScript</span>
+                    <pre>
+                        <code><br>function sum(a, b) { <br>return a + b;<br> }</code>
+                    </pre>
+                    <span>Date: 2023-12-11</span>
+                </div>
+            </li>
+            <li>
+                <div class="snippet-header">
+                    <span>HTML Starter Template</span>
+                    <button>
+                        <!-- TODO: Remember hidden -->
+                        <span class="material-symbols-outlined">favorite</span>
+                        <span class="material-symbols-outlined">heart_broken</span>
+                    </button>
+                </div>
+                <div class="snippet-body">
+                    <span>Author: john_doe</span>
+                    <span>Programming language: JavaScript</span>
+                    <span>Date: 2023-12-11</span>
+                    <pre>
+                        <code><br>function sum(a, b) { <br>return a + b;<br> }</code>
+                    </pre>
+                </div>
+            </li>
+        </ul>
     </section>
 </main>
 
@@ -86,5 +126,6 @@
 </footer>
 
 <script src="js-src/user.js"></script>
+<script src="js-src/codeSnippet.js"></script>
 </body>
 </html>

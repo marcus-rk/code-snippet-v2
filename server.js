@@ -33,16 +33,10 @@ db.connect(error => {
 });
 
 // All files within the public folder will be served automatically
-// when you access the root path http://localhost:3000/
+// when you access the root path http://localhost:8080/
 // For details, refer to: https://expressjs.com/en/starter/static-files.html
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Endpoint to retrieve all users (excluding passwords)
-app.get('/users/all',(req, res)=>{
-    db.query('SELECT user_id, username, created_at FROM `user`',(error, results)=>{
-        res.send(results);
-    });
-});
 
 // Endpoint to create a new user
 app.post('/user/new', (req, res) => {
@@ -112,91 +106,19 @@ app.post('/user/login', (req, res) => {
     });
 });
 
-
 // Endpoint to retrieve all code snippets (title, author, author_id, language, code, date, snippet_id)
 app.get('/code-snippets/all',(req, res)=>{
-    db.query('SELECT CS.title, U.username AS author, U.user_id AS author_id, PL.language_name AS programming_language, CS.code_snippet AS `code`, CS.created_at AS `date`, CS.snippet_id FROM code_snippet AS CS INNER JOIN `user` AS U ON CS.user_id = U.user_id INNER JOIN programming_language AS PL ON CS.language_id = PL.language_id',(error, results)=>{
-        res.send(results);
-    });
-});
-
-// Endpoint to create a new code snippet
-app.post('/code-snippets/new',(req, res)=>{
-    // Extracting values from the request body
-    const title = req.body.title;
-    const language_id = req.body.language_id;
-    const code_snippet = req.body.code_snippet;
-    const user_id = req.body.user_id;
-
-    // Inserting a new code snippet into the database
-    db.query('INSERT INTO code_snippet (user_id, title, code_snippet, language_id) VALUES (?, ?, ?, ?)',
-        [user_id, title, code_snippet, language_id],
-        (error, results) => {
-            if (error) {
-                console.error('Error inserting code-snippet:', error);
-                res.status(500).send('Internal Server Error ' +  error);
-            } else {
-                res.status(200).send(results);
-            }
-        });
-});
-
-// Endpoint to mark a code snippet as a favorite for a specific user
-app.post('/code-snippet-faves/new',(req, res)=>{
-    // Extracting values from the request body
-    const user_id = req.body.user_id;
-    const snippet_id = req.body.snippet_id;
-
-    // Adding a new favorite code snippet entry to the database
-    db.query('INSERT INTO code_snippet_fave (user_id, snippet_id) VALUES (?, ?)',
-        [user_id, snippet_id],
-        (error, results) => {
-            if (error) {
-                console.error('Error inserting fave code-snippet:', error);
-                res.status(500).send('Internal Server Error ' +  error);
-            } else {
-                res.status(200).send(results);
-            }
-        });
-});
-
-// Endpoint to remove a code snippet from favorites
-app.post('/code-snippet-faves/remove',(req, res)=>{
-    // Extracting the snippet_id from the request body
-    const snippet_id = req.body.snippet_id;
-
-    // Deleting the favorite code snippet entry from the database
-    db.query('DELETE FROM code_snippet_fave WHERE snippet_id = ?',
-        [snippet_id],
-        (error, results) => {
-            if (error) {
-                console.error('Error removing fave code-snippet:', error);
-                res.status(500).send('Internal Server Error ' +  error);
-            } else {
-                res.status(200).send(results);
-            }
-        });
-});
-
-// Endpoint to retrieve favorite code snippets for a specific user
-app.get('/:id/code-snippet-faves',(req, res)=>{
-    // Extracting user id from the request parameters
-    const idFromUser = req.params.id;
-
-    // Query to get favorite code snippets for the specified user
-    db.query('SELECT CS.title, U.username AS author, U.user_id AS author_id, PL.language_name AS programming_language, CS.code_snippet AS `code`, CS.snippet_id FROM code_snippet_fave AS CSF INNER JOIN code_snippet AS CS ON CSF.snippet_id = CS.snippet_id INNER JOIN programming_language AS PL ON CS.language_id = PL.language_id INNER JOIN `user` AS U ON CS.user_id = U.user_id WHERE CSF.user_id = ?',
-        [idFromUser],
+    db.query('SELECT CS.title, U.username AS author, U.user_id AS author_id, PL.language_name AS programming_language, CS.code_snippet AS `code`, CS.created_at AS `date`, CS.snippet_id FROM code_snippet AS CS INNER JOIN `user` AS U ON CS.user_id = U.user_id INNER JOIN programming_language AS PL ON CS.language_id = PL.language_id',
         (error, results)=>{
+        if (error) {
+            console.error('Error finding cafe:', error);
+            res.status(500).send('Internal Server Error ' +  error);
+        } else {
             res.send(results);
-        });
-});
-
-// Endpoint to retrieve all programming languages
-app.get('/programming_languages/all',(req, res)=>{
-    db.query('SELECT * FROM programming_language',(error, results)=>{
-        res.send(results);
+        }
     });
 });
+
 
 // Default route to handle 404 errors for unmatched API endpoints
 app.get('*',(req,res) =>{
