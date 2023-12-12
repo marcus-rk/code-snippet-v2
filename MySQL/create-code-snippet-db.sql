@@ -58,17 +58,17 @@ VALUES ('john_doe', 'john@mail.com', 'password123', "1989-05-01"),
        ('jane_smith', 'jane@smith.com','securepass', "1999-10-12"),
        ('bob_coder', 'bob@mail.com','letmein', "2002-04-04");
 
--- Insert programming languages (JS, HTML and CSS because that is what I know)
+-- Insert programming languages (JS, HTML, CSS and MySQL because that is what I know)
 -- ID to keep normalization
 INSERT INTO programming_language (language_name) VALUES
     ('JavaScript'),
     ('HTML'),
     ('CSS'),
-    ('SQL');
+    ('MySQL');
 
 -- Inserting data into `code_snippet` table
 INSERT INTO code_snippet (user_id, title, code_snippet, language_id)
-VALUES (1, 'Sum two Numbers', 'function sum(a, b) { 	return a + b;	 }', 1),
+VALUES (1, 'Sum two Numbers', 'function sum(a, b) {	return a + b;	}', 1),
        (2, 'HTML Template', '<html>	    <head>	        <title>My Page</title>	    </head>	    <body>	        Hello, World!	    </body>	</html>', 2),
        (3, 'CSS Styling', 'body { 	font-family: Arial, sans-serif; 	background-color: #f4f4f4;	 }', 3),
        (2, 'SELECT all','SELECT * FROM table;', 4),

@@ -10,7 +10,7 @@ showCodeSnippets()
 function showCodeSnippets() {
     fetch('/code-snippets/all')
         .then(response => response.json())
-        .then(codeSnippetArray => createAndDisplayCodeSnippets(codeSnippetArray)
+        .then(codeSnippetArray => createAndRenderCodeSnippets(codeSnippetArray)
         ).catch(error => {
         console.error('Something went wrong:', error);
     });
@@ -21,8 +21,8 @@ function showCodeSnippets() {
  *
  * @param {Array} codeSnippetArray - An array of code snippet objects containing code snippet information.
  */
-function createAndDisplayCodeSnippets(codeSnippetArray) {
-    codeSnippetUlElement.innerHTML = '';
+function createAndRenderCodeSnippets(codeSnippetArray) {
+    clearCodeSnippets();
 
     codeSnippetArray.forEach(codeSnippetObject => {
         const codeSnippetLiElement = getCodeSnippetElement(codeSnippetObject);
@@ -40,35 +40,35 @@ function createAndDisplayCodeSnippets(codeSnippetArray) {
  * @returns {HTMLLIElement} - The created list item element.
  */
 function getCodeSnippetElement(codeSnippetObject) {
-    const title = codeSnippetObject.title;
-    const author = codeSnippetObject.author;
-    const author_id = codeSnippetObject.author_id;
-    const snippet_id = codeSnippetObject.snippet_id;
-    const programmingLanguage = codeSnippetObject.programming_language;
-    const date = codeSnippetObject.date.slice(0,10);
-    const code = codeSnippetObject.code;
-
     const li = document.createElement('li');
-    const spanTitle = document.createElement('span');
-    const spanAuthor = document.createElement('span');
-    const spanProgrammingLanguage = document.createElement('span');
-    const spanDate = document.createElement('span');
-    const pre = document.createElement('pre');
-    const codeTag = document.createElement('code');
+    const snippetHeader = getCodeSnippetHeader(codeSnippetObject);
+    const snippetBody = getCodeSnippetBody(codeSnippetObject);
+    
+    li.appendChild(snippetHeader);
+    li.appendChild(snippetBody);
 
-    spanTitle.innerText = `Title: ${title}`;
-    spanAuthor.innerText = `Author: ${author}`;
-    spanProgrammingLanguage.innerText = `Programming language: ${programmingLanguage}`;
-    spanDate.innerText = `Date: ${date}`;
-    codeTag.innerText = `${code}`;
+    return li;
+}
 
-    pre.appendChild(codeTag);
+function getCodeSnippetHeader(codeSnippetObject) {
+    const divContainer = document.createElement('div');
+    const title = document.createElement('span');
+    const faveButton = document.createElement('button');
+    const faveIcon = document.createElement('span');
+    const unfaveIcon = document.createElement('span');
 
-    li.appendChild(spanTitle);
-    li.appendChild(spanAuthor);
-    li.appendChild(spanProgrammingLanguage);
-    li.appendChild(spanDate);
-    li.appendChild(pre);
+    divContainer.setAttribute('class', 'snippet-header');
+    faveIcon.setAttribute('class', 'material-symbols-outlined');
+    unfaveIcon.setAttribute('class', 'material-symbols-outlined');
+
+    title.innerText = codeSnippetObject.title;
+    faveIcon.innerText = 'favorite';
+    unfaveIcon.innerText = 'heart_broken';
+
+    faveButton.appendChild(faveIcon);
+    faveButton.appendChild(unfaveIcon);
+    divContainer.appendChild(title);
+    divContainer.appendChild(faveButton);
 
     // If the logged-in user is NOT the same as code snippet author, create favorite button
     // if (author_id !== getCurrentUserID()) {
@@ -76,5 +76,103 @@ function getCodeSnippetElement(codeSnippetObject) {
     //    li.appendChild(button);
     // }
 
-    return li;
+    return divContainer;
+}
+
+function getCodeSnippetBody(codeSnippetObject) {
+    const divContainer = document.createElement('div');
+    const divTop = getCodeSnippetBodyTop(codeSnippetObject.author, codeSnippetObject.programming_language);
+    const codeSnippet = getCodeSnippetBodyElement(codeSnippetObject.code, codeSnippetObject.programming_language);
+    const date = getCodeSnippetDate(codeSnippetObject.date);
+
+    divContainer.appendChild(divTop);
+    divContainer.appendChild(codeSnippet);
+    divContainer.appendChild(date);
+
+    divContainer.setAttribute('class', 'snippet-body');
+
+    return divContainer;
+}
+
+function getCodeSnippetDate(date) {
+    const dateElement = document.createElement('span');
+    dateElement.setAttribute('class', 'snippet-date');
+    const dateWithoutTime = date.slice(0,10);
+    dateElement.innerText = `Date: ${dateWithoutTime}`;
+
+    return dateElement;
+}
+
+function getCodeSnippetBodyTop(author, programmingLanguage) {
+    const divContainer = document.createElement('div');
+    const authorSpan = document.createElement('span');
+    const imgIcon = getProgrammingIcon(programmingLanguage);
+
+    divContainer.setAttribute('class', 'snippet-body-top');
+
+    authorSpan.innerText = `Author: ${author}`; // TODO: DO author bold
+
+    divContainer.appendChild(authorSpan);
+    divContainer.appendChild(imgIcon);
+
+    return divContainer;
+}
+
+function getProgrammingIcon(programmingLanguage) {
+    const img = document.createElement('img');
+
+    switch (programmingLanguage) {
+        case 'JavaScript':
+            img.setAttribute('src', 'images/js.png');
+            img.setAttribute('alt', 'javascript icon');
+            img.classList.add('image-border');
+            break;
+        case 'MySQL':
+            img.setAttribute('src', 'images/mysql.png');
+            img.setAttribute('alt', 'MySQL icon');
+            break;
+        case 'HTML':
+            img.setAttribute('src', 'images/html.png');
+            img.setAttribute('alt', 'HTML icon');
+            break;
+        case 'CSS':
+            img.setAttribute('src', 'images/css.png');
+            img.setAttribute('alt', 'CSS icon');
+            break;
+    }
+
+    console.log(img);
+
+    return img;
+}
+
+function getCodeSnippetBodyElement(code, programmingLanguage) {
+    const pre = document.createElement('pre');
+    const codeElement = document.createElement('code');
+
+    switch (programmingLanguage) {
+        case 'JavaScript':
+            codeElement.setAttribute('class', 'language-javascript');
+            break;
+        case 'MySQL':
+            codeElement.setAttribute('class', 'language-sql'); // my sql not supported by hightlight.js
+            break;
+        case 'HTML':
+            codeElement.setAttribute('class', 'language-html'); // my sql not supported by hightlight.js
+            break;
+        case 'CSS':
+            codeElement.setAttribute('class', 'language-css'); // my sql not supported by hightlight.js
+            break;
+    }
+
+    codeElement.innerText = code.replaceAll('\t', '\n'); // TODO: Make this work!
+
+    pre.appendChild(codeElement);
+
+    return pre;
+}
+
+function clearCodeSnippets() {
+    codeSnippetUlElement.innerHTML = '';
+
 }
