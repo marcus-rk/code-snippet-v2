@@ -22,9 +22,20 @@
     </div>
 
     <button class="hidden" id="profile">
-        <span id="username"></span>
+        <span id="username">user</span>
         <span class="material-symbols-outlined">account_circle</span>
     </button>
+    <ul class="dropdown hidden">
+        <li>
+            <button id="my-snippets" class="priority-button">Show My Snippets</button>
+        </li>
+        <li>
+            <button class="priority-button">Show Fave Snippets</button>
+        </li>
+        <li>
+            <button id="logout">Log out</button>
+        </li>
+    </ul>
 
     <div id="create-backdrop" class="hidden">
         <div id="create-user-modal" class="modal hidden">

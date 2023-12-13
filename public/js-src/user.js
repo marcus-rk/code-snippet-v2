@@ -3,6 +3,8 @@ const frontPageLogInUserButton = document.querySelector('#front-log-in');
 const headerButtonsElement = document.querySelector('.header-buttons');
 const profileButton = document.querySelector('#profile');
 const profileUsernameSpan = document.querySelector('#profile #username');
+const profileDropdown = document.querySelector('.dropdown');
+const logoutButton = document.querySelector('#logout');
 
 // Create user modal elements here:
 const userModalElement = document.querySelector('#create-user-modal');
@@ -47,6 +49,8 @@ modalLoginUserPasswordInput.addEventListener("keypress", (event) => {
         modalLoginUserButton.click();
     }
 });
+profileButton.addEventListener('click', toggleProfileDropdown);
+logoutButton.addEventListener('click', logoutUser);
 
 let loggedIn = false;
 let currentUserId;
@@ -200,6 +204,14 @@ function changeToLoggedIn(userId, username) {
     currentUserId = userId;
 }
 
+function logoutUser() {
+    toggleProfileButton();
+    toggleHeaderButtons();
+    toggleProfileDropdown();
+    loggedIn = false;
+    currentUserId = undefined;
+}
+
 function getCurrentUserID() {
     return currentUserId;
 }
@@ -225,4 +237,8 @@ function toggleLogInUserModal() {
     modalLoginUserPasswordInput.value = '';
     loginModalElement.classList.toggle('hidden');
     loginModalBackdropElement.classList.toggle('hidden');
+}
+
+function toggleProfileDropdown() {
+    profileDropdown.classList.toggle('hidden');
 }
