@@ -47,6 +47,9 @@ modalLoginUserPasswordInput.addEventListener("keypress", (event) => {
     }
 });
 
+let loggedIn = false;
+let currentUserId;
+
 /***************************************************/
 /******************* FUNCTIONS *********************/
 /***************************************************/
@@ -72,12 +75,14 @@ function createNewUser() {
             "birthDate": birthDate,
             "password": password
         })
-    }).then(response => {
+    }).then(async response => {
         if (response.ok) {
             console.log('User created successfully');
+
+            const userObj = await response.json();
+
             toggleCreateUserModal();
-            changeToLoggedIn();
-            // TODO: What to do after user creation?
+            changeToLoggedIn(userObj.user_id, userObj.username);
         } else {
             console.error('Something went wrong:', response.statusText);
             return Promise.reject(response.status); // Reject the promise with the status
@@ -166,12 +171,14 @@ function loginUser() {
             "usernameOrEmail": usernameOrEmail,
             "password": password
         })
-    }).then(response => {
+    }).then(async response => {
         if (response.ok) {
             console.log('User logged in successfully');
+
+            const userObj = await response.json();
+
             toggleLogInUserModal();
-            changeToLoggedIn();
-            // TODO: What to do after user logged in?
+            changeToLoggedIn(userObj.user_id, userObj.username);
         } else {
             console.error('Something went wrong:', response.statusText);
             return Promise.reject(response.status); // Reject the promise with the status
@@ -185,14 +192,16 @@ function loginUser() {
     });
 }
 
-function changeToLoggedIn() {
+function changeToLoggedIn(userId, username) {
     toggleHeaderButtons();
-    toggleProfileButton();
-    // TODO: Add profile icon and functionality
+    toggleProfileButton(username);
+    loggedIn = true;
+    currentUserId = userId;
 }
 
-function toggleProfileButton() {
+function toggleProfileButton(username) {
     profileButton.classList.toggle('hidden')
+    // TODO: Add username and functionality
 }
 function toggleHeaderButtons() {
     headerButtonsElement.classList.toggle('hidden');

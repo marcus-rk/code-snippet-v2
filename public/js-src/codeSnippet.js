@@ -141,8 +141,6 @@ function getProgrammingIcon(programmingLanguage) {
             break;
     }
 
-    console.log(img);
-
     return img;
 }
 
@@ -158,10 +156,10 @@ function getCodeSnippetBodyElement(code, programmingLanguage) {
             codeElement.setAttribute('class', 'language-sql'); // my sql not supported by hightlight.js
             break;
         case 'HTML':
-            codeElement.setAttribute('class', 'language-html'); // my sql not supported by hightlight.js
+            codeElement.setAttribute('class', 'language-html');
             break;
         case 'CSS':
-            codeElement.setAttribute('class', 'language-css'); // my sql not supported by hightlight.js
+            codeElement.setAttribute('class', 'language-css');
             break;
     }
 

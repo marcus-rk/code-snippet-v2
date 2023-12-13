@@ -40,7 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Endpoint to create a new user
 app.post('/user/new', (req, res) => {
-    // Extracting username, email, birthdate and password from the request body
+    // Extracting username, email, birthdate, and password from the request body
     const username = req.body.username;
     const email = req.body.email;
     const birthDate = req.body.birthDate;
@@ -50,23 +50,45 @@ app.post('/user/new', (req, res) => {
     db.query('SELECT user_id FROM `user` WHERE username = ? OR email = ?',
         [username, email],
         (error, results) => {
+            if (error) {
+                console.error('Error checking if user exists:', error);
+                res.status(500).send('Internal Server Error ' +  error);
+                return;
+            }
+
             if (results.length > 0) {
                 res.status(403).send('Username OR email already exists');
             } else {
                 // Inserting a new user into the database
                 db.query('INSERT INTO `user` (username, email, date_of_birth, `password`) VALUES (?, ?, ?, ?)',
                     [username, email, birthDate, password],
-                    (error, results) => {
+                    (error) => {
                         if (error) {
                             console.error('Error inserting user:', error);
                             res.status(500).send('Internal Server Error ' +  error);
                         } else {
-                            res.status(200).send(results);
+                            // Getting the new user's data
+                            db.query('SELECT username, user_id FROM `user` WHERE username = ?',
+                                [username],
+                                (error, results) => {
+                                    if (error) {
+                                        console.error('Error getting new user:', error);
+                                        res.status(500).send('Internal Server Error ' +  error);
+                                    } else {
+                                        // Sending back the username and user_id as an object
+                                        const newUser = {
+                                            username: results[0].username,
+                                            user_id: results[0].user_id
+                                        };
+                                        res.status(200).send(newUser);
+                                    }
+                                });
                         }
                     });
             }
         });
 });
+
 
 // Endpoint to log in user by email or username (and password)
 // Use POST and not GET, to not expose user password in URL.
@@ -95,7 +117,22 @@ app.post('/user/login', (req, res) => {
                 }
 
                 if (results.length > 0) {
-                    res.status(200).send('Login successful');
+                    // Getting the new user's data
+                    db.query('SELECT username, user_id FROM `user` WHERE (username = ? OR email = ?) ',
+                        [usernameOrEmail, usernameOrEmail],
+                        (error, results) => {
+                            if (error) {
+                                console.error('Error getting new user:', error);
+                                res.status(500).send('Internal Server Error ' +  error);
+                            } else {
+                                // Sending back the username and user_id as an object
+                                const user = {
+                                    username: results[0].username,
+                                    user_id: results[0].user_id
+                                };
+                                res.status(200).send(user);
+                            }
+                        });
                 } else {
                     res.status(401).send('Incorrect password');
                 }
