@@ -39,7 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Endpoint to create a new user
-app.post('/user/new', (req, res) => {
+app.post('/users/new', (req, res) => {
     // Extracting username, email, birthdate, and password from the request body
     const username = req.body.username;
     const email = req.body.email;
@@ -92,7 +92,7 @@ app.post('/user/new', (req, res) => {
 
 // Endpoint to log in user by email or username (and password)
 // Use POST and not GET, to not expose user password in URL.
-app.post('/user/login', (req, res) => {
+app.post('/users/login', (req, res) => {
     // Extracting username and password from the request body
     const usernameOrEmail = req.body.usernameOrEmail;
     const password = req.body.password;
@@ -118,8 +118,8 @@ app.post('/user/login', (req, res) => {
 
                 if (results.length > 0) {
                     // Getting the new user's data
-                    db.query('SELECT username, user_id FROM `user` WHERE (username = ? OR email = ?) ',
-                        [usernameOrEmail, usernameOrEmail],
+                    const newUserQuery = 'SELECT username, user_id FROM `user` WHERE (username = ? OR email = ?)';
+                    db.query(newUserQuery, [usernameOrEmail, usernameOrEmail],
                         (error, results) => {
                             if (error) {
                                 console.error('Error getting new user:', error);
@@ -146,8 +146,8 @@ app.post('/user/login', (req, res) => {
 
 // Endpoint to retrieve all code snippets (title, author, author_id, language, code, date, snippet_id)
 app.get('/code-snippets/all',(req, res)=>{
-    db.query('SELECT CS.title, U.username AS author, U.user_id AS author_id, PL.language_name AS programming_language, CS.code_snippet AS `code`, CS.created_at AS `date`, CS.snippet_id FROM code_snippet AS CS INNER JOIN `user` AS U ON CS.user_id = U.user_id INNER JOIN programming_language AS PL ON CS.language_id = PL.language_id',
-        (error, results)=>{
+    const query = 'SELECT CS.title, U.username AS author, U.user_id AS author_id, PL.language_name AS programming_language, CS.code_snippet AS `code`, CS.created_at AS `date`, CS.snippet_id FROM code_snippet AS CS INNER JOIN `user` AS U ON CS.user_id = U.user_id INNER JOIN programming_language AS PL ON CS.language_id = PL.language_id'
+    db.query(query, (error, results)=>{
         if (error) {
             console.error('Error finding code snippets:', error);
             res.status(500).send('Internal Server Error ' +  error);
@@ -166,11 +166,46 @@ app.post('/code-snippets/new',(req, res)=>{
     const language_id = req.body.language_id;
 
     // Inserting a new code snippet into the database
-    db.query('INSERT INTO code_snippet (user_id, title, code_snippet, language_id) VALUES (?, ?, ?, ?)',
-        [user_id, title, code_snippet, language_id],
+    const newSnippetQuery = 'INSERT INTO code_snippet (user_id, title, code_snippet, language_id) VALUES (?, ?, ?, ?)';
+    db.query(newSnippetQuery, [user_id, title, code_snippet, language_id],
         (error, results) => {
             if (error) {
                 console.error('Error inserting code-snippet:', error);
+                res.status(500).send('Internal Server Error ' +  error);
+            } else {
+                res.status(200).send(results);
+            }
+        });
+});
+
+// Get all code snippets by a specific user
+app.get('/users/:userId/code-snippets', (req, res) => {
+    const userId = parseInt(req.params.userId);
+
+    // Your database query to retrieve code snippets by user ID goes here
+    const query = 'SELECT CS.title, U.username AS author, U.user_id AS author_id, PL.language_name AS programming_language, CS.code_snippet AS `code`, CS.created_at AS `date`, CS.snippet_id FROM code_snippet AS CS INNER JOIN `user` AS U ON CS.user_id = U.user_id INNER JOIN programming_language AS PL ON CS.language_id = PL.language_id WHERE CS.user_id = ?';
+
+    db.query(query, [userId], (error, results) => {
+        if (error) {
+            console.error('Error retrieving code snippets:', error);
+            res.status(500).send('Internal Server Error');
+        } else {
+            res.send(results);
+        }
+    });
+});
+
+// Endpoint to retrieve favorite code snippets for a specific user
+app.get('/users/:userId/code-snippet-faves',(req, res)=>{
+    // Extracting user id from the request parameters
+    const idFromUser = req.params.userId;
+
+    // Query to get favorite code snippets for the specified user
+    const query = 'SELECT CS.title, U.username AS author, U.user_id AS author_id, PL.language_name AS programming_language, CS.code_snippet AS `code`, CS.snippet_id, CS.created_at AS `date` FROM code_snippet_fave AS CSF INNER JOIN code_snippet AS CS ON CSF.snippet_id = CS.snippet_id INNER JOIN programming_language AS PL ON CS.language_id = PL.language_id INNER JOIN `user` AS U ON CS.user_id = U.user_id WHERE CSF.user_id = ?';
+    db.query(query, [idFromUser],
+        (error, results) => {
+            if (error) {
+                console.error('Error getting code-snippets:', error);
                 res.status(500).send('Internal Server Error ' +  error);
             } else {
                 res.status(200).send(results);

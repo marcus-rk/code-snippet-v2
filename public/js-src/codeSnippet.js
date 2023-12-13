@@ -1,6 +1,8 @@
+const codeSnippetsHeadline = document.querySelector('.code-snippets h2');
 const codeSnippetUlElement = document.querySelector('.code-snippets ul');
 const codeSnippetCountElement = document.querySelector('.code-snippets span');
 const newCodeSnippetButton = document.querySelector('#new-snippet');
+
 
 // Create code-snippet modal elements here:
 const createCodeModal = document.querySelector('#create-snippet-modal');
@@ -15,14 +17,28 @@ newCodeSnippetButton.addEventListener('click', toggleCreationModal);
 cancelCreateCodeSnippet.addEventListener('click', toggleCreationModal);
 createCodeSnippetButton.addEventListener('click', createNewCodeSnippet);
 
-showCodeSnippets();
+showAllCodeSnippets();
 
 /**
  * Fetches code snippet data from the server and updates the UI with the retrieved code snippet information.
  * @function
  */
-function showCodeSnippets() {
+function showAllCodeSnippets() {
+    codeSnippetsHeadline.innerText = 'Code snippet Overview';
+
     fetch('/code-snippets/all')
+        .then(response => response.json())
+        .then(codeSnippetArray => createAndRenderCodeSnippets(codeSnippetArray)
+        ).catch(error => {
+        console.error('Something went wrong:', error);
+    });
+}
+
+function showAllUserCodeSnippets(userId) {
+    codeSnippetsHeadline.innerText = 'My Code Snippet Overview';
+    toggleProfileDropdown();
+
+    fetch(`/users/${userId}/code-snippets`)
         .then(response => response.json())
         .then(codeSnippetArray => createAndRenderCodeSnippets(codeSnippetArray)
         ).catch(error => {
@@ -52,7 +68,7 @@ function createNewCodeSnippet() {
     }).then(response => {
         if (response.ok) {
             console.log('Code-snippet created successfully');
-            showCodeSnippets();
+            showAllCodeSnippets();
             toggleCreationModal();
         } else {
             console.error('Something went wrong:', response.statusText);

@@ -5,6 +5,7 @@ const profileButton = document.querySelector('#profile');
 const profileUsernameSpan = document.querySelector('#profile #username');
 const profileDropdown = document.querySelector('.dropdown');
 const logoutButton = document.querySelector('#logout');
+const showUserCodeSnippets = document.querySelector('#my-snippets');
 
 // Create user modal elements here:
 const userModalElement = document.querySelector('#create-user-modal');
@@ -51,6 +52,9 @@ modalLoginUserPasswordInput.addEventListener("keypress", (event) => {
 });
 profileButton.addEventListener('click', toggleProfileDropdown);
 logoutButton.addEventListener('click', logoutUser);
+showUserCodeSnippets.addEventListener('click', () => {
+    showAllUserCodeSnippets(getCurrentUserID());
+})
 
 let loggedIn = false;
 let currentUserId;
@@ -69,7 +73,7 @@ function createNewUser() {
         return;
     }
 
-    fetch("/user/new", {
+    fetch("/users/new", {
         method: 'POST',
         headers: {
             'Content-type': 'application/json'
@@ -167,7 +171,7 @@ function loginUser() {
     const usernameOrEmail = modalLoginUsernameOrEmailInput.value;
     const password = modalLoginUserPasswordInput.value;
 
-    fetch("/user/login", {
+    fetch("/users/login", {
         method: 'POST',
         headers: {
             'Content-type': 'application/json'
