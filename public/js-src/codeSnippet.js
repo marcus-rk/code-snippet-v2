@@ -93,7 +93,8 @@ function createAndRenderCodeSnippets(codeSnippetArray) {
     });
 
     codeSnippetCountElement.innerText = `(Found ${codeSnippetArray.length} code-snippets)`;
-    hljs.highlightAll(); // hightligt.js
+
+    hljs.highlightAll(); // Give all code correct layout with hightlight.js
 }
 
 /**

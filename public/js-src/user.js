@@ -6,6 +6,7 @@ const profileUsernameSpan = document.querySelector('#profile #username');
 const profileDropdown = document.querySelector('.dropdown');
 const logoutButton = document.querySelector('#logout');
 const showUserCodeSnippets = document.querySelector('#my-snippets');
+const showAllCodeSnippetsButton = document.querySelector('#all-snippets');
 
 // Create user modal elements here:
 const userModalElement = document.querySelector('#create-user-modal');
@@ -51,6 +52,7 @@ modalLoginUserPasswordInput.addEventListener("keypress", (event) => {
     }
 });
 profileButton.addEventListener('click', toggleProfileDropdown);
+showAllCodeSnippetsButton.addEventListener('click', showAllCodeSnippets);
 logoutButton.addEventListener('click', logoutUser);
 showUserCodeSnippets.addEventListener('click', () => {
     showAllUserCodeSnippets(getCurrentUserID());
@@ -212,6 +214,7 @@ function logoutUser() {
     toggleProfileButton();
     toggleHeaderButtons();
     toggleProfileDropdown();
+    showAllCodeSnippets();
     loggedIn = false;
     currentUserId = undefined;
 }
