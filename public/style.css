@@ -76,6 +76,10 @@ h1 {
     min-width: fit-content;
 }
 
+#profile #username {
+    margin-right: 25px;
+}
+
 .material-symbols-outlined {
     color: var(--color-accent);
     transform: scale(225%);

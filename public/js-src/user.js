@@ -2,6 +2,7 @@ const frontPageCreateUserButton = document.querySelector('#front-create-user');
 const frontPageLogInUserButton = document.querySelector('#front-log-in');
 const headerButtonsElement = document.querySelector('.header-buttons');
 const profileButton = document.querySelector('#profile');
+const profileUsernameSpan = document.querySelector('#profile #username');
 
 // Create user modal elements here:
 const userModalElement = document.querySelector('#create-user-modal');
@@ -200,6 +201,7 @@ function changeToLoggedIn(userId, username) {
 }
 
 function toggleProfileButton(username) {
+    profileUsernameSpan.innerText = username;
     profileButton.classList.toggle('hidden')
     // TODO: Add username and functionality
 }
