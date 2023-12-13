@@ -200,6 +200,10 @@ function changeToLoggedIn(userId, username) {
     currentUserId = userId;
 }
 
+function getCurrentUserID() {
+    return currentUserId;
+}
+
 function toggleProfileButton(username) {
     profileUsernameSpan.innerText = username;
     profileButton.classList.toggle('hidden')

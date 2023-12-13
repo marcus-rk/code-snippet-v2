@@ -63,6 +63,7 @@ header {
 h1 {
     font-size: 36px;
     color: var(--color-white);
+    margin-top: -6px;
     padding-bottom: 3px;
     border-bottom: 3px solid var(--color-accent);
 }
@@ -111,7 +112,7 @@ button {
     min-width: 175px;
 }
 
-#create-backdrop, #login-backdrop {
+#create-backdrop, #login-backdrop, #snippet-backdrop {
     position: fixed;
     display: flex;
     justify-content: center;
@@ -177,7 +178,9 @@ form {
     gap: 20px;
 }
 
-.modal form input {
+.modal form input,
+.modal form select,
+.modal form textarea {
     background-color: var(--color-white);
     color: var(--color-black);
     border: 2px solid var(--color-darker);
@@ -188,6 +191,21 @@ form {
     margin-bottom: 20px;
     width: 92%;
     border-radius: 8px;
+}
+
+.modal form select{
+    min-height: 16px;
+    width: 99%;
+}
+select option {
+    color: var(--color-black);
+} select option::placeholder {
+      color: var(--color-black);
+  }
+
+.modal form textarea {
+    height: 60px;
+    max-width: 92%;
 }
 
 .modal form label {

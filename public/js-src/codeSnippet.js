@@ -1,7 +1,21 @@
 const codeSnippetUlElement = document.querySelector('.code-snippets ul');
 const codeSnippetCountElement = document.querySelector('.code-snippets span');
+const newCodeSnippetButton = document.querySelector('#new-snippet');
 
-showCodeSnippets()
+// Create code-snippet modal elements here:
+const createCodeModal = document.querySelector('#create-snippet-modal');
+const createCodeBackdrop = document.querySelector('#snippet-backdrop');
+const createCodeTitleInput = document.querySelector('#snippet-title');
+const createCodeLanguageInput = document.querySelector('#language');
+const createCodeBodyInput = document.querySelector('#code');
+const createCodeSnippetButton = document.querySelector('#create-snippet');
+const cancelCreateCodeSnippet = document.querySelector('#create-snippet-cancel');
+
+newCodeSnippetButton.addEventListener('click', toggleCreationModal);
+cancelCreateCodeSnippet.addEventListener('click', toggleCreationModal);
+createCodeSnippetButton.addEventListener('click', createNewCodeSnippet);
+
+showCodeSnippets();
 
 /**
  * Fetches code snippet data from the server and updates the UI with the retrieved code snippet information.
@@ -13,6 +27,39 @@ function showCodeSnippets() {
         .then(codeSnippetArray => createAndRenderCodeSnippets(codeSnippetArray)
         ).catch(error => {
         console.error('Something went wrong:', error);
+    });
+}
+
+function createNewCodeSnippet() {
+    const title = createCodeTitleInput.value;
+    const language_id = createCodeLanguageInput.value;
+    const code_snippet = createCodeBodyInput.value;
+    const user_id = getCurrentUserID();
+
+    // TODO: Check valid input
+
+    fetch("/code-snippets/new", {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            "title": title,
+            "language_id": language_id,
+            "code_snippet": code_snippet,
+            "user_id": user_id
+        })
+    }).then(response => {
+        if (response.ok) {
+            console.log('Code-snippet created successfully');
+            showCodeSnippets();
+            toggleCreationModal();
+        } else {
+            console.error('Something went wrong:', response.statusText);
+            return Promise.reject(response.status); // Reject the promise with the status
+        }
+    }).catch(error => {
+        console.error('Unhandled error:', error);
     });
 }
 
@@ -168,6 +215,19 @@ function getCodeSnippetBodyElement(code, programmingLanguage) {
     pre.appendChild(codeElement);
 
     return pre;
+}
+
+function toggleCreationModal() {
+    if (!loggedIn) {
+        toggleLogInUserModal();
+        return;
+    }
+
+    createCodeTitleInput.value = '';
+    createCodeLanguageInput.value = '';
+    createCodeBodyInput.value = '';
+    createCodeModal.classList.toggle('hidden');
+    createCodeBackdrop.classList.toggle('hidden');
 }
 
 function clearCodeSnippets() {

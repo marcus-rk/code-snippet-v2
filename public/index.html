@@ -68,13 +68,39 @@
         </div>
     </div>
 
+    <div id="snippet-backdrop" class="hidden">
+        <div id="create-snippet-modal" class="modal hidden">
+            <h2>Create New Code Snippet</h2>
+            <form>
+                <label for="snippet-title">Title</label>
+                <input type="text" id="snippet-title" placeholder="Best console.log..." required>
+
+                <label for="language">Programming Language</label>
+                <select id="language">
+                    <option value="1">JavaScript</option>
+                    <option value="2">HTML</option>
+                    <option value="3">CSS</option>
+                    <option value="4">MySQL</option>
+                </select>
+
+                <label for="code">Code</label>
+                <textarea id="code" placeholder="console.log(2+2)..." required></textarea>
+            </form>
+            <div class="form-buttons">
+                <button id="create-snippet" class="priority-button">Create Snippet</button>
+                <button id="create-snippet-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
 </header>
 
 <main>
     <section class="left-section">
         <div>
-            <button class="priority-button">New Snippet</button>
+            <button id="new-snippet" class="priority-button">New Snippet</button>
         </div>
+
         <div class="filters">
             <h2>Filters</h2>
             <ul></ul>
