@@ -135,9 +135,9 @@ function getCodeSnippetHeader(codeSnippetObject) {
     divContainer.appendChild(faveButton);
 
     // If the logged-in user is NOT the same as code snippet author, create favorite button
-    // if (author_id !== getCurrentUserID()) {
-    //    const button = createFavoriteButton(snippet_id);
-    //    li.appendChild(button);
+    // if (!loggedIn || codeSnippetObject.author_id === getCurrentUserID()) {
+    //   const button = createFavoriteButton(snippet_id);
+    //   button.appendChild(button)
     // }
 
     return divContainer;
