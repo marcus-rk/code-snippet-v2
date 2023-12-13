@@ -143,17 +143,39 @@ app.post('/user/login', (req, res) => {
     });
 });
 
+
 // Endpoint to retrieve all code snippets (title, author, author_id, language, code, date, snippet_id)
 app.get('/code-snippets/all',(req, res)=>{
     db.query('SELECT CS.title, U.username AS author, U.user_id AS author_id, PL.language_name AS programming_language, CS.code_snippet AS `code`, CS.created_at AS `date`, CS.snippet_id FROM code_snippet AS CS INNER JOIN `user` AS U ON CS.user_id = U.user_id INNER JOIN programming_language AS PL ON CS.language_id = PL.language_id',
         (error, results)=>{
         if (error) {
-            console.error('Error finding cafe:', error);
+            console.error('Error finding code snippets:', error);
             res.status(500).send('Internal Server Error ' +  error);
         } else {
             res.send(results);
         }
     });
+});
+
+// Endpoint to create a new code snippet
+app.post('/code-snippets/new',(req, res)=>{
+    // Extracting values from the request body
+    const user_id = req.body.user_id;
+    const title = req.body.title;
+    const code_snippet = req.body.code_snippet;
+    const language_id = req.body.language_id;
+
+    // Inserting a new code snippet into the database
+    db.query('INSERT INTO code_snippet (user_id, title, code_snippet, language_id) VALUES (?, ?, ?, ?)',
+        [user_id, title, code_snippet, language_id],
+        (error, results) => {
+            if (error) {
+                console.error('Error inserting code-snippet:', error);
+                res.status(500).send('Internal Server Error ' +  error);
+            } else {
+                res.status(200).send(results);
+            }
+        });
 });
 
 
