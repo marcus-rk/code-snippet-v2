@@ -221,6 +221,8 @@ function loginUser() {
     }).catch(error => {
         if (error === 401) {
             console.log('username/email or password is incorrect');
+            displayInputfieldError(modalLoginUsernameOrEmailInput, 'username/email or password is incorrect')
+            displayInputfieldError(modalLoginUserPasswordInput, 'username/email or password is incorrect')
         } else {
             console.error('Unhandled error:', error);
         }
