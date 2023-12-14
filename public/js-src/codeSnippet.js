@@ -3,6 +3,10 @@ const codeSnippetUlElement = document.querySelector('.code-snippets ul');
 const codeSnippetCountElement = document.querySelector('.code-snippets span');
 const newCodeSnippetButton = document.querySelector('#new-snippet');
 const profileDropdown = document.querySelector('.dropdown');
+const languageFilter = document.querySelector('#filter-language');
+const authorFilter = document.querySelector('#filter-author');
+const authorFilterLi = document.querySelector('#author-li');
+const searchFilterButton = document.querySelector('#filter-search');
 
 // Create code-snippet modal elements here:
 const createCodeModal = document.querySelector('#create-snippet-modal');
@@ -16,15 +20,19 @@ const cancelCreateCodeSnippet = document.querySelector('#create-snippet-cancel')
 newCodeSnippetButton.addEventListener('click', toggleCreationModal);
 cancelCreateCodeSnippet.addEventListener('click', toggleCreationModal);
 createCodeSnippetButton.addEventListener('click', createNewCodeSnippet);
+searchFilterButton.addEventListener('click', searchFilter);
 
-showAllCodeSnippets();
+document.addEventListener('DOMContentLoaded', function () {
+    showAllCodeSnippets();
+    loadAllUsers();
+});
 
 /**
  * Fetches code snippet data from the server and updates the UI with the retrieved code snippet information.
  * @function
  */
 function showAllCodeSnippets() {
-    faveSnippetView = false;
+    setCurrentSectionView('all')
     codeSnippetsHeadline.innerText = 'Code snippet Overview';
 
     if (!profileDropdown.classList.contains('hidden'))
@@ -39,7 +47,7 @@ function showAllCodeSnippets() {
 }
 
 function showAllUserCodeSnippets(userId) {
-    faveSnippetView = false;
+    setCurrentSectionView('user');
     codeSnippetsHeadline.innerText = 'My Code Snippet Overview';
 
     if (!profileDropdown.classList.contains('hidden'))
@@ -94,14 +102,47 @@ function createNewCodeSnippet() {
 function createAndRenderCodeSnippets(codeSnippetArray) {
     clearCodeSnippets();
 
-    codeSnippetArray.forEach(codeSnippetObject => {
+    const filteredArray = getFilteredCodeSnippetArray(codeSnippetArray);
+
+    filteredArray.forEach(codeSnippetObject => {
         const codeSnippetLiElement = getCodeSnippetElement(codeSnippetObject);
         codeSnippetUlElement.appendChild(codeSnippetLiElement);
     });
 
-    codeSnippetCountElement.innerText = `(Found ${codeSnippetArray.length} code-snippets)`;
+    codeSnippetCountElement.innerText = `(Found ${filteredArray.length} code-snippets)`;
 
     hljs.highlightAll(); // Give all code correct layout with hightlight.js
+}
+
+function getFilteredCodeSnippetArray(codeSnippetArray) {
+    const languageFilterValue = parseInt(languageFilter.value);
+    const authorFilterValue = parseInt(authorFilter.value);
+
+    if (languageFilterValue === 0 && authorFilterValue === 0)
+        return codeSnippetArray;
+
+    return codeSnippetArray.filter(codeSnippet => {
+        const matchesLanguage = languageFilterValue === 0 || codeSnippet.language_id === languageFilterValue;
+        const matchesAuthor = authorFilterValue === 0 || codeSnippet.author_id === authorFilterValue;
+
+        return matchesLanguage && matchesAuthor;
+    });
+}
+
+function searchFilter() {
+    switch (currentSectionView) {
+        case 'all':
+            showAllCodeSnippets();
+            break;
+        case 'fave':
+            showFaveCodeSnippets();
+            break;
+        case 'user':
+            showAllUserCodeSnippets(getCurrentUserID());
+            break;
+        default:
+            showAllCodeSnippets();
+    }
 }
 
 /**
@@ -211,7 +252,7 @@ function removeFaveCodeSnippet(user_id, snippet_id, faveButton) {
             faveButton.setAttribute('liked', false);
             const icon = faveButton.firstChild;
             icon.innerText = 'favorite';
-            if (faveSnippetView) {
+            if (currentSectionView === 'fave') {
                 showFaveCodeSnippets();
                 toggleProfileDropdown();
             }

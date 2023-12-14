@@ -117,7 +117,27 @@
 
         <div class="filters">
             <h2>Filters</h2>
-            <ul></ul>
+            <ul>
+                <li>
+                    <label for="filter-language">Programming Language</label>
+                    <select id="filter-language">
+                        <option value="0">All</option>
+                        <option value="1">JavaScript</option>
+                        <option value="2">HTML</option>
+                        <option value="3">CSS</option>
+                        <option value="4">MySQL</option>
+                    </select>
+                </li>
+                <li id="author-li">
+                    <label for="filter-author">Author</label>
+                    <select id="filter-author">
+                        <option value="0">All</option>
+                    </select>
+                </li>
+                <li>
+                    <button id="filter-search">Search</button>
+                </li>
+            </ul>
         </div>
     </section>
     <section class="code-snippets">
@@ -128,11 +148,11 @@
 </main>
 
 <footer>
-    <span>Footer</span>
+    <span>© 2023 makj0005</span>
 </footer>
 
-<script src="js-src/codeSnippet.js"></script>
 <script src="js-src/faveCodeSnippet.js"></script>
+<script src="js-src/codeSnippet.js"></script>
 <script src="js-src/user.js"></script>
 
 <!-- highlight.js scripts -->

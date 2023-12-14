@@ -1,14 +1,15 @@
 const faveSnippetsButton = document.querySelector('#fave-snippets');
 
-faveSnippetsButton.addEventListener('click', showFaveCodeSnippets);
-
-let faveSnippetView = false;
+faveSnippetsButton.addEventListener('click', () => {
+    showFaveCodeSnippets();
+    toggleProfileDropdown();
+});
 
 /**
  * Fetches favorite code snippet data from the server and updates the UI with the retrieved information.
  */
 function showFaveCodeSnippets() {
-    faveSnippetView = true;
+    setCurrentSectionView('fave');
     const userId = getCurrentUserID();
 
     fetch(`/users/${userId}/code-snippet-faves`)
@@ -27,10 +28,11 @@ function showFaveCodeSnippets() {
  */
 function createAndDisplayFaveSnippets(faveSnippetArray) {
     codeSnippetsHeadline.innerText = 'Favorite Code Snippet Overview';
-    toggleProfileDropdown();
     clearCodeSnippets();
 
-    faveSnippetArray.forEach(faveSnippetObject => {
+    const filteredArray = getFilteredCodeSnippetArray(faveSnippetArray);
+
+    filteredArray.forEach(faveSnippetObject => {
         const faveSnippetLiElement = getCodeSnippetElement(faveSnippetObject);
         codeSnippetUlElement.appendChild(faveSnippetLiElement);
     });

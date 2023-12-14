@@ -59,6 +59,7 @@ showUserCodeSnippets.addEventListener('click', () => {
 
 let loggedIn = false;
 let currentUserId;
+let currentSectionView = 'all';
 
 /***************************************************/
 /******************* FUNCTIONS *********************/
@@ -168,6 +169,24 @@ function displayInputfieldError(inputElement, errorMessage) {
     inputElement.placeholder = errorMessage;
 }
 
+function loadAllUsers() {
+    fetch('/users-with-code-snippets')
+        .then(response => response.json())
+        .then(usersArray => createAndRenderAuthor(usersArray)
+        ).catch(error => {
+        console.error('Something went wrong:', error);
+    });
+}
+
+function createAndRenderAuthor(usersArray) {
+    usersArray.forEach(userObj => {
+        const option = document.createElement('option');
+        option.innerText = userObj.author;
+        option.setAttribute('value', userObj.author_id);
+        authorFilter.appendChild(option);
+    })
+}
+
 function loginUser() {
     const usernameOrEmail = modalLoginUsernameOrEmailInput.value;
     const password = modalLoginUserPasswordInput.value;
@@ -206,6 +225,8 @@ function changeToLoggedIn(userId, username) {
     toggleHeaderButtons();
     toggleProfileButton(username);
     showAllCodeSnippets();
+    languageFilter.selectedIndex = 0;
+    authorFilter.selectedIndex = 0;
     loggedIn = true;
     currentUserId = userId;
 }
@@ -214,9 +235,28 @@ function logoutUser() {
     toggleProfileButton();
     toggleHeaderButtons();
     toggleProfileDropdown();
-    showAllCodeSnippets();
+    languageFilter.selectedIndex = 0;
+    authorFilter.selectedIndex = 0;
     loggedIn = false;
     currentUserId = undefined;
+    setCurrentSectionView('all')
+    showAllCodeSnippets();
+}
+
+function setCurrentSectionView(labelString) {
+    if (labelString === 'user') {
+        if (!authorFilterLi.classList.contains('hidden')) {
+            authorFilterLi.classList.add('hidden');
+            authorFilter.value = getCurrentUserID();
+        }
+    } else {
+        if (authorFilterLi.classList.contains('hidden') && labelString !== currentSectionView) {
+            authorFilter.selectedIndex = 0;
+            authorFilterLi.classList.remove('hidden');
+        }
+    }
+
+    currentSectionView = labelString;
 }
 
 function getCurrentUserID() {

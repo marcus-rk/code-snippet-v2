@@ -211,7 +211,8 @@ form {
 
 .modal form input,
 .modal form select,
-.modal form textarea {
+.modal form textarea,
+.filters ul li select {
     background-color: var(--color-white);
     color: var(--color-black);
     border: 2px solid var(--color-darker);
@@ -222,6 +223,7 @@ form {
     margin-bottom: 20px;
     width: 92%;
     border-radius: 8px;
+    cursor: pointer;
 }
 
 .modal form select{
@@ -291,6 +293,38 @@ main {
 .filters h2 {
     padding-bottom: 3px;
     border-bottom: 3px solid var(--color-dark);
+}
+
+.filters ul {
+    padding-top: 25px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.filters ul li {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.filters ul li label {
+    font-weight: bold;
+}
+
+.filters ul li select {
+    width: 100%;
+    padding: 5px;
+}
+
+.filters #filter-search {
+    min-width: 60%;
 }
 
 .code-snippets {
