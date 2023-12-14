@@ -83,7 +83,7 @@ function createNewCodeSnippet() {
     }).then(response => {
         if (response.ok) {
             console.log('Code-snippet created successfully');
-            showAllUserCodeSnippets(getCurrentUserID());
+            searchFilter();
             toggleCreationModal();
         } else {
             console.error('Something went wrong:', response.statusText);
@@ -253,8 +253,7 @@ function removeFaveCodeSnippet(user_id, snippet_id, faveButton) {
             const icon = faveButton.firstChild;
             icon.innerText = 'favorite';
             if (currentSectionView === 'fave') {
-                showFaveCodeSnippets();
-                toggleProfileDropdown();
+                searchFilter();
             }
         } else {
             console.error('Failed to remove from favorites:', response.statusText);
