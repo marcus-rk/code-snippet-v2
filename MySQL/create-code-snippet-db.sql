@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS code_snippet (
     snippet_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     title VARCHAR(128) NOT NULL,
-    code_snippet TEXT NOT NULL,
+    code_snippet TEXT NOT NULL, -- Text datatype. No restrictions to length
     language_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES `user`(user_id) ON DELETE CASCADE,
@@ -54,9 +54,9 @@ CREATE TABLE IF NOT EXISTS code_snippet_fave (
 
 -- Inserting data into `user` table
 INSERT INTO `user` (username, email, `password`, date_of_birth)
-VALUES ('john_doe', 'john@mail.com', 'password123', "1989-05-01"),
-       ('jane_smith', 'jane@smith.com','securepass', "1999-10-12"),
-       ('bob_coder', 'bob@mail.com','letmein', "2002-04-04");
+VALUES ('john_doe', 'john@mail.com', 'password', "1989-05-01"),
+       ('jane_smith', 'jane@smith.com','password', "1999-10-12"),
+       ('bob_coder', 'bob@mail.com','password', "2002-04-04");
 
 -- Insert programming languages (JS, HTML, CSS and MySQL because that is what I know)
 -- ID to keep normalization
@@ -68,12 +68,13 @@ INSERT INTO programming_language (language_name) VALUES
 
 -- Inserting data into `code_snippet` table
 INSERT INTO code_snippet (user_id, title, code_snippet, language_id)
-VALUES (1, 'Sum two Numbers', 'function sum(a, b) {	return a + b;	}', 1),
-       (2, 'HTML Template', '<html>	    <head>	        <title>My Page</title>	    </head>	    <body>	        Hello, World!	    </body>	</html>', 2),
-       (3, 'CSS Styling', 'body { 	font-family: Arial, sans-serif; 	background-color: #f4f4f4;	 }', 3),
-       (2, 'SELECT all','SELECT * FROM table;', 4),
-       (1, 'Filter by Condition', 'SELECT * FROM my_table 	WHERE column_name = "value";', 4),
-       (3, 'Console Log', 'console.log("Logging message");', 1);
+VALUES
+  (1, 'Sum two Numbers', 'function sum(a, b) {\n\treturn a + b;\n}', 1),
+  (3, 'CSS Styling', 'body {\n\tfont-family: Arial, sans-serif;\n\tbackground-color: #f4f4f4;\n}', 3),
+  (2, 'HTML Template', '<html>\n\t<head>\n\t\t<title>My Page</title>\n\t</head>\n\t<body>Hello, World!</body>\n</html>', 2),
+  (2, 'SELECT all', 'SELECT * FROM table;', 4),
+  (1, 'Filter by Condition', 'SELECT * FROM my_table\nWHERE column_name = "value";', 4),
+  (3, 'Christmas Console Log', 'console.log("Merry Christmas!");', 1);
 
 -- Inserting data into `code_snippet_fave` table
 INSERT INTO code_snippet_fave (user_id, snippet_id)
@@ -96,4 +97,80 @@ SELECT * FROM programming_language;
 
 SELECT * FROM code_snippet_fave;
 
--- -------------------------------------------
+-- ----------------------------------------------------
+-- Advanced Used API queries --------------------------
+-- ----------------------------------------------------
+
+-- /users/:userId/code-snippets
+-- Get all code snippets by a specific user
+SELECT
+	CS.title,
+	U.username AS author,
+	U.user_id AS author_id,
+	PL.language_name AS programming_language,
+	PL.language_id,
+	CS.code_snippet AS `code`,
+	CS.created_at AS `date`,
+	CS.snippet_id FROM code_snippet AS CS
+INNER JOIN `user` AS U
+	ON CS.user_id = U.user_id
+INNER JOIN programming_language AS PL
+	ON CS.language_id = PL.language_id
+WHERE CS.user_id = 1; -- ? in API
+
+-- /users-with-code-snippets
+-- Endpoint to retrieve users who have created code snippets
+SELECT DISTINCT
+	U.user_id AS author_id,
+    U.username AS author
+FROM `user` AS U
+INNER JOIN code_snippet AS CS
+	ON U.user_id = CS.user_id;
+
+-- /users/:userId/code-snippet-faves
+-- Endpoint to retrieve favorite code snippets for a specific user
+SELECT
+	CS.title,
+    U.username AS author,
+    U.user_id AS author_id,
+    PL.language_name AS programming_language,
+    PL.language_id,
+    CS.code_snippet AS `code`,
+    CS.snippet_id,
+    CS.created_at AS `date`
+FROM code_snippet_fave AS CSF
+INNER JOIN code_snippet AS CS
+	ON CSF.snippet_id = CS.snippet_id
+INNER JOIN programming_language AS PL
+	ON CS.language_id = PL.language_id
+INNER JOIN `user` AS U
+	ON CS.user_id = U.user_id
+WHERE CSF.user_id = 1; -- ? in API
+
+-- /users/:userId/favorite-code-snippets/:snippetId
+-- Endpoint to retrieve a specific favorite code snippet for a specific user
+SELECT
+	CS.title,
+    U.username AS author,
+    U.user_id AS author_id,
+    PL.language_name AS programming_language,
+    PL.language_id,
+    CS.code_snippet AS `code`,
+    CS.snippet_id,
+    CS.created_at AS `date`
+FROM code_snippet_fave AS CSF
+INNER JOIN code_snippet AS CS
+	ON CSF.snippet_id = CS.snippet_id
+INNER JOIN programming_language AS PL
+	ON CS.language_id = PL.language_id
+INNER JOIN `user` AS U
+	ON CS.user_id = U.user_id
+WHERE CSF.user_id = 1 AND CSF.snippet_id = 4; -- ? in API
+
+-- /users/:userId/favorite-code-snippets/:snippetId
+-- Endpoint to delete the favorite code snippet for the specified user and snippet ID
+-- DELETE FROM code_snippet_fave WHERE user_id = ? AND snippet_id = ?
+
+-- /users/:userId/favorite-code-snippets/:snippetId
+-- Endpoint to add a code snippet to favorites for the specified user and snippet ID
+SELECT * FROM code_snippet_fave WHERE user_id = 3 AND snippet_id = 1; -- ? in API
