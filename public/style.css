@@ -437,6 +437,7 @@ main {
 }
 
 .snippet-body code {
+    display: inline;
     min-width: fit-content;
     width: 100%;
     margin: 0 20px;

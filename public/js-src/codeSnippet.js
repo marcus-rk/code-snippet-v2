@@ -21,6 +21,12 @@ newCodeSnippetButton.addEventListener('click', toggleCreationModal);
 cancelCreateCodeSnippet.addEventListener('click', toggleCreationModal);
 createCodeSnippetButton.addEventListener('click', createNewCodeSnippet);
 searchFilterButton.addEventListener('click', searchFilter);
+createCodeBodyInput.addEventListener('keydown', (event) => {
+    if (event.key === "Tab") {
+        event.preventDefault();
+        createCodeBodyInput.value += '\t';
+    }
+})
 
 document.addEventListener('DOMContentLoaded', function () {
     showAllCodeSnippets();
@@ -68,7 +74,16 @@ function createNewCodeSnippet() {
     const code_snippet = createCodeBodyInput.value;
     const user_id = getCurrentUserID();
 
-    // TODO: Check valid input
+    // Validate input
+    if (!title || !language_id || !code_snippet) {
+        displayInputfieldError(createCodeTitleInput, 'Snippet needs a title');
+        displayInputfieldError(createCodeLanguageInput, 'Please select');
+        displayInputfieldError(createCodeBodyInput, 'Please fill out code');
+        return;
+    }
+
+    // inspired by: https://stackoverflow.com/questions/2640845/preserving-indentation-when-inserting-html-from-mysql
+    const formattedCode = code_snippet.replace(/(\r\n|\n|\r)/gm, "\\n");
 
     fetch("/code-snippets/new", {
         method: 'POST',
@@ -78,7 +93,7 @@ function createNewCodeSnippet() {
         body: JSON.stringify({
             "title": title,
             "language_id": language_id,
-            "code_snippet": code_snippet,
+            "code_snippet": formattedCode,
             "user_id": user_id
         })
     }).then(response => {
@@ -381,7 +396,8 @@ function getCodeSnippetBodyElement(code, programmingLanguage) {
             break;
     }
 
-    codeElement.innerText = code.replaceAll('\t', '\n'); // TODO: Make this work!
+    // Use textContent to preserve line breaks
+    codeElement.textContent = code.replace(/\\n/g, "\n");
 
     pre.appendChild(codeElement);
 
