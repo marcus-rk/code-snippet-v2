@@ -2,10 +2,13 @@ const faveSnippetsButton = document.querySelector('#fave-snippets');
 
 faveSnippetsButton.addEventListener('click', showFaveCodeSnippets);
 
+let faveSnippetView = false;
+
 /**
  * Fetches favorite code snippet data from the server and updates the UI with the retrieved information.
  */
 function showFaveCodeSnippets() {
+    faveSnippetView = true;
     const userId = getCurrentUserID();
 
     fetch(`/users/${userId}/code-snippet-faves`)

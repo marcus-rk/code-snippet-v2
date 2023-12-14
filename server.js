@@ -213,6 +213,78 @@ app.get('/users/:userId/code-snippet-faves',(req, res)=>{
         });
 });
 
+// Endpoint to retrieve a specific favorite code snippet for a specific user
+app.get('/users/:userId/favorite-code-snippets/:snippetId', (req, res) => {
+    // Extracting user id and snippet id from the request parameters
+    const userId = req.params.userId;
+    const snippetId = req.params.snippetId;
+
+    // Query to get a specific favorite code snippet for the specified user and snippet ID
+    const query = 'SELECT CS.title, U.username AS author, U.user_id AS author_id, PL.language_name AS programming_language, CS.code_snippet AS `code`, CS.snippet_id, CS.created_at AS `date` FROM code_snippet_fave AS CSF INNER JOIN code_snippet AS CS ON CSF.snippet_id = CS.snippet_id INNER JOIN programming_language AS PL ON CS.language_id = PL.language_id INNER JOIN `user` AS U ON CS.user_id = U.user_id WHERE CSF.user_id = ? AND CSF.snippet_id = ?';
+
+    db.query(query, [userId, snippetId], (error, results) => {
+        if (error) {
+            console.error('Error getting code-snippet:', error);
+            res.status(500).send('Internal Server Error ' + error);
+        } else {
+            res.status(200).send(results);
+        }
+    });
+});
+
+// Endpoint to delete the favorite code snippet for the specified user and snippet ID
+app.delete('/users/:userId/favorite-code-snippets/:snippetId', (req, res) => {
+    // Extracting user id and snippet id from the request parameters
+    const userId = req.params.userId;
+    const snippetId = parseInt(req.params.snippetId);
+
+    // Query to delete the favorite code snippet for the specified user and snippet ID
+    const deleteQuery = 'DELETE FROM code_snippet_fave WHERE user_id = ? AND snippet_id = ?';
+
+    db.query(deleteQuery, [userId, snippetId], (error, results) => {
+        if (error) {
+            console.error('Error getting code-snippet:', error);
+            res.status(500).send('Internal Server Error ' + error);
+        } else {
+            res.status(200).send(results);
+        }
+    });
+});
+
+// Endpoint to add a code snippet to favorites for the specified user and snippet ID
+app.post('/users/:userId/favorite-code-snippets/:snippetId', (req, res) => {
+    // Extracting user id and snippet id from the request parameters
+    const userId = req.params.userId;
+    const snippetId = parseInt(req.params.snippetId);
+
+    // Query to check if the code snippet is already in favorites
+    const checkQuery = 'SELECT * FROM code_snippet_fave WHERE user_id = ? AND snippet_id = ?';
+
+    db.query(checkQuery, [userId, snippetId], (error, results) => {
+        if (error) {
+            console.error('Error checking favorite status:', error);
+            res.status(500).send('Internal Server Error ' + error);
+        } else {
+            if (results.length === 0) {
+                // Code snippet is not in favorites, proceed to add
+                const addQuery = 'INSERT INTO code_snippet_fave (user_id, snippet_id) VALUES (?, ?)';
+
+                db.query(addQuery, [userId, snippetId], (error, results) => {
+                    if (error) {
+                        console.error('Error adding to favorites:', error);
+                        res.status(500).send('Internal Server Error ' + error);
+                    } else {
+                        res.status(200).send(results);
+                    }
+                });
+            } else {
+                // Code snippet is already in favorites, send conflict status
+                res.status(403).send('Code snippet is already in favorites');
+            }
+        }
+    });
+});
+
 
 // Default route to handle 404 errors for unmatched API endpoints
 app.get('*',(req,res) =>{

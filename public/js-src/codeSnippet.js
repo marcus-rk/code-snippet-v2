@@ -2,7 +2,7 @@ const codeSnippetsHeadline = document.querySelector('.code-snippets h2');
 const codeSnippetUlElement = document.querySelector('.code-snippets ul');
 const codeSnippetCountElement = document.querySelector('.code-snippets span');
 const newCodeSnippetButton = document.querySelector('#new-snippet');
-
+const profileDropdown = document.querySelector('.dropdown');
 
 // Create code-snippet modal elements here:
 const createCodeModal = document.querySelector('#create-snippet-modal');
@@ -24,7 +24,11 @@ showAllCodeSnippets();
  * @function
  */
 function showAllCodeSnippets() {
+    faveSnippetView = false;
     codeSnippetsHeadline.innerText = 'Code snippet Overview';
+
+    if (!profileDropdown.classList.contains('hidden'))
+        profileDropdown.classList.add('hidden');
 
     fetch('/code-snippets/all')
         .then(response => response.json())
@@ -35,8 +39,11 @@ function showAllCodeSnippets() {
 }
 
 function showAllUserCodeSnippets(userId) {
+    faveSnippetView = false;
     codeSnippetsHeadline.innerText = 'My Code Snippet Overview';
-    toggleProfileDropdown();
+
+    if (!profileDropdown.classList.contains('hidden'))
+        profileDropdown.classList.add('hidden');
 
     fetch(`/users/${userId}/code-snippets`)
         .then(response => response.json())
@@ -68,7 +75,7 @@ function createNewCodeSnippet() {
     }).then(response => {
         if (response.ok) {
             console.log('Code-snippet created successfully');
-            showAllCodeSnippets();
+            showAllUserCodeSnippets(getCurrentUserID());
             toggleCreationModal();
         } else {
             console.error('Something went wrong:', response.statusText);
@@ -117,30 +124,136 @@ function getCodeSnippetElement(codeSnippetObject) {
 function getCodeSnippetHeader(codeSnippetObject) {
     const divContainer = document.createElement('div');
     const title = document.createElement('span');
-    const faveButton = document.createElement('button');
-    const faveIcon = document.createElement('span');
-    const unfaveIcon = document.createElement('span');
 
     divContainer.setAttribute('class', 'snippet-header');
-    faveIcon.setAttribute('class', 'material-symbols-outlined');
-    unfaveIcon.setAttribute('class', 'material-symbols-outlined');
 
     title.innerText = codeSnippetObject.title;
-    faveIcon.innerText = 'favorite';
-    unfaveIcon.innerText = 'heart_broken';
 
-    faveButton.appendChild(faveIcon);
-    faveButton.appendChild(unfaveIcon);
     divContainer.appendChild(title);
-    divContainer.appendChild(faveButton);
 
-    // If the logged-in user is NOT the same as code snippet author, create favorite button
-    // if (!loggedIn || codeSnippetObject.author_id === getCurrentUserID()) {
-    //   const button = createFavoriteButton(snippet_id);
-    //   button.appendChild(button)
-    // }
+    // If the logged-in user is NOT the same as code snippet author, create favorite or un-favorite button
+    const usersOwnSnippet = codeSnippetObject.author_id === getCurrentUserID() || getCurrentUserID() === undefined;
+    if (loggedIn && !usersOwnSnippet) {
+        const userId = getCurrentUserID();
+        const snippetId = codeSnippetObject.snippet_id;
+
+        fetch(`/users/${userId}/favorite-code-snippets/${snippetId}`)
+            .then(response => response.json())
+            .then(codeSnippetArray => {
+                const faveButton = createFaveButton(codeSnippetArray, codeSnippetObject);
+                divContainer.appendChild(faveButton);
+            })
+            .catch(error => {
+                console.error('Something went wrong:', error);
+            });
+    }
 
     return divContainer;
+}
+
+function createFaveButton(faveCodeSnippetArray, codeSnippetObject) {
+    const faveButton = document.createElement('button');
+    const icon = document.createElement('span');
+
+    const likedByCurrentUser = faveCodeSnippetArray.length > 0;
+
+    if (likedByCurrentUser) {
+        icon.innerText = 'heart_broken';
+        icon.setAttribute('class', 'material-symbols-outlined');
+
+        faveButton.setAttribute('liked', 'true');
+        faveButton.setAttribute('snippet-id', faveCodeSnippetArray[0].snippet_id);
+    } else {
+        icon.innerText = 'favorite';
+        icon.setAttribute('class', 'material-symbols-outlined');
+
+        faveButton.setAttribute('liked', 'false');
+        faveButton.setAttribute('snippet-id', codeSnippetObject.snippet_id);
+    }
+
+    faveButton.addEventListener('click', (event) => {
+        const thisFaveButton = event.target.parentNode; // icon is targeted, therefore parentNode
+        const snippet_id = thisFaveButton.getAttribute('snippet-id');
+        const isLiked = JSON.parse(thisFaveButton.getAttribute('liked')); // convert fx. 'true' to true
+
+        if (isLiked) {
+            removeFaveCodeSnippet(getCurrentUserID(), parseInt(snippet_id), thisFaveButton);
+        } else {
+            addFaveCodeSnippet(getCurrentUserID(), parseInt(snippet_id), thisFaveButton);
+        }
+    });
+
+    faveButton.appendChild(icon);
+
+    return faveButton;
+}
+
+/**
+ * Removes a code snippet from favorites by sending a POST request to the server.
+ *
+ * @param user_id
+ * @param {number} snippet_id - The ID of the code snippet to be removed from favorites.
+ * @param faveButton
+ */
+function removeFaveCodeSnippet(user_id, snippet_id, faveButton) {
+    fetch(`/users/${user_id}/favorite-code-snippets/${snippet_id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            "userId" : user_id,
+            "snippetId": snippet_id
+        })
+    }).then(response => {
+        if (response.ok) {
+            console.log('Removed from favorites successfully');
+            faveButton.setAttribute('liked', false);
+            const icon = faveButton.firstChild;
+            icon.innerText = 'favorite';
+            if (faveSnippetView) {
+                showFaveCodeSnippets();
+                toggleProfileDropdown();
+            }
+        } else {
+            console.error('Failed to remove from favorites:', response.statusText);
+            return Promise.reject(response.status); // Reject the promise with the status
+        }
+    }).catch(error => {
+        console.error('Unhandled error:', error);
+    });
+}
+
+/**
+ * Add a code snippet to favorites by sending a POST request to the server.
+ *
+ * @param {number} user_id - The ID of the user adding the code snippet to favorites.
+ * @param {number} snippet_id - The ID of the code snippet to be added to favorites.
+ * @param {HTMLButtonElement} faveButton - The button element representing the favorite status.
+ */
+function addFaveCodeSnippet(user_id, snippet_id, faveButton) {
+    fetch(`/users/${user_id}/favorite-code-snippets/${snippet_id}`, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            "userId": user_id,
+            "snippetId": snippet_id
+        })
+    }).then(response => {
+        if (response.ok) {
+            console.log('Added to favorites successfully');
+            faveButton.setAttribute('liked', true);
+            const icon = faveButton.firstChild;
+            icon.innerText = 'heart_broken';
+        } else {
+            console.error('Failed to add to favorites:', response.statusText);
+            return Promise.reject(response.status); // Reject the promise with the status
+        }
+    }).catch(error => {
+        console.error('Unhandled error:', error);
+    });
 }
 
 function getCodeSnippetBody(codeSnippetObject) {
@@ -249,5 +362,4 @@ function toggleCreationModal() {
 
 function clearCodeSnippets() {
     codeSnippetUlElement.innerHTML = '';
-
 }

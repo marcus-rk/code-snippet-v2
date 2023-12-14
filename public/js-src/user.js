@@ -3,7 +3,6 @@ const frontPageLogInUserButton = document.querySelector('#front-log-in');
 const headerButtonsElement = document.querySelector('.header-buttons');
 const profileButton = document.querySelector('#profile');
 const profileUsernameSpan = document.querySelector('#profile #username');
-const profileDropdown = document.querySelector('.dropdown');
 const logoutButton = document.querySelector('#logout');
 const showUserCodeSnippets = document.querySelector('#my-snippets');
 const showAllCodeSnippetsButton = document.querySelector('#all-snippets');
@@ -206,6 +205,7 @@ function loginUser() {
 function changeToLoggedIn(userId, username) {
     toggleHeaderButtons();
     toggleProfileButton(username);
+    showAllCodeSnippets();
     loggedIn = true;
     currentUserId = userId;
 }
@@ -220,7 +220,7 @@ function logoutUser() {
 }
 
 function getCurrentUserID() {
-    return currentUserId;
+    return parseInt(currentUserId);
 }
 
 function toggleProfileButton(username) {
