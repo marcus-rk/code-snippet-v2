@@ -194,6 +194,7 @@ function getCodeSnippetHeader(codeSnippetObject) {
         const userId = getCurrentUserID();
         const snippetId = codeSnippetObject.snippet_id;
 
+        // Endpoint to retrieve a specific favorite code snippet for a specific user
         fetch(`/users/${userId}/favorite-code-snippets/${snippetId}`)
             .then(response => response.json())
             .then(codeSnippetArray => {
