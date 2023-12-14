@@ -47,6 +47,7 @@ function showAllCodeSnippets() {
 }
 
 function showAllUserCodeSnippets(userId) {
+    loadAllUsers();
     setCurrentSectionView('user');
     codeSnippetsHeadline.innerText = 'My Code Snippet Overview';
 

@@ -179,6 +179,12 @@ function loadAllUsers() {
 }
 
 function createAndRenderAuthor(usersArray) {
+    authorFilter.innerHTML = '';
+    const option = document.createElement('option');
+    option.innerText = 'All';
+    option.setAttribute('value', '0');
+    authorFilter.appendChild(option);
+
     usersArray.forEach(userObj => {
         const option = document.createElement('option');
         option.innerText = userObj.author;
@@ -224,11 +230,12 @@ function loginUser() {
 function changeToLoggedIn(userId, username) {
     toggleHeaderButtons();
     toggleProfileButton(username);
-    showAllCodeSnippets();
     languageFilter.selectedIndex = 0;
     authorFilter.selectedIndex = 0;
     loggedIn = true;
     currentUserId = userId;
+    setCurrentSectionView('all');
+    showAllCodeSnippets();
 }
 
 function logoutUser() {
@@ -239,7 +246,7 @@ function logoutUser() {
     authorFilter.selectedIndex = 0;
     loggedIn = false;
     currentUserId = undefined;
-    setCurrentSectionView('all')
+    setCurrentSectionView('all');
     showAllCodeSnippets();
 }
 

@@ -182,9 +182,6 @@ app.post('/code-snippets/new',(req, res)=>{
 app.get('/users/:userId/code-snippets', (req, res) => {
     const userId = parseInt(req.params.userId);
 
-    console.log(userId);
-    console.log(typeof userId);
-
     // Your database query to retrieve code snippets by user ID goes here
     const query = 'SELECT CS.title, U.username AS author, U.user_id AS author_id, PL.language_name AS programming_language, PL.language_id, CS.code_snippet AS `code`, CS.created_at AS `date`, CS.snippet_id FROM code_snippet AS CS INNER JOIN `user` AS U ON CS.user_id = U.user_id INNER JOIN programming_language AS PL ON CS.language_id = PL.language_id WHERE CS.user_id = ?';
 
@@ -193,7 +190,7 @@ app.get('/users/:userId/code-snippets', (req, res) => {
             console.error('Error retrieving code snippets:', error);
             res.status(500).send('Internal Server Error');
         } else {
-            res.send(results);
+            res.status(200).send(results);
         }
     });
 });
