@@ -218,20 +218,20 @@ function createFaveButton(faveCodeSnippetArray, codeSnippetObject) {
         icon.innerText = 'heart_broken';
         icon.setAttribute('class', 'material-symbols-outlined');
 
-        faveButton.setAttribute('liked', 'true');
+        faveButton.setAttribute('isLiked', 'true');
         faveButton.setAttribute('snippet-id', faveCodeSnippetArray[0].snippet_id);
     } else {
         icon.innerText = 'favorite';
         icon.setAttribute('class', 'material-symbols-outlined');
 
-        faveButton.setAttribute('liked', 'false');
+        faveButton.setAttribute('isLiked', 'false');
         faveButton.setAttribute('snippet-id', codeSnippetObject.snippet_id);
     }
 
     faveButton.addEventListener('click', (event) => {
         const thisFaveButton = event.target.parentNode; // icon is targeted, therefore parentNode
         const snippet_id = thisFaveButton.getAttribute('snippet-id');
-        const isLiked = JSON.parse(thisFaveButton.getAttribute('liked')); // convert fx. 'true' to true
+        const isLiked = JSON.parse(thisFaveButton.getAttribute('isLiked')); // convert fx. 'true' to true
 
         if (isLiked) {
             removeFaveCodeSnippet(getCurrentUserID(), parseInt(snippet_id), thisFaveButton);
@@ -265,7 +265,7 @@ function removeFaveCodeSnippet(user_id, snippet_id, faveButton) {
     }).then(response => {
         if (response.ok) {
             console.log('Removed from favorites successfully');
-            faveButton.setAttribute('liked', false);
+            faveButton.setAttribute('isLiked', false);
             const icon = faveButton.firstChild;
             icon.innerText = 'favorite';
             if (currentSectionView === 'fave') {
@@ -300,7 +300,7 @@ function addFaveCodeSnippet(user_id, snippet_id, faveButton) {
     }).then(response => {
         if (response.ok) {
             console.log('Added to favorites successfully');
-            faveButton.setAttribute('liked', true);
+            faveButton.setAttribute('isLiked', true);
             const icon = faveButton.firstChild;
             icon.innerText = 'heart_broken';
         } else {
