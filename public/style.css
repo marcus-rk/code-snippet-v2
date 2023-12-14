@@ -346,8 +346,8 @@ main {
     justify-content: center;
     gap: 45px;
     min-width: 500px;
-    width: fit-content;
-    max-width: 800px;
+    width: 90%;
+    max-width: 850px;
 }
 
 .code-snippets li {
@@ -465,7 +465,7 @@ footer {
     height: 100px;
 }
 
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 768px) {
 
     h1 {
         font-size: 30px;
